@@ -131,7 +131,7 @@
                     }
                 },
                 "total": {
-                    "_comment": "Add all line item subtotals together - Includes vat",
+                    "_comment": "Add all line item subtotals together to get the total for basket",
                     "_gen": "add",
                     "args": [
                         {"_gen": "var", "var": "subtotals"}
@@ -146,7 +146,7 @@
                     ]
                 },
                 "nett":{
-                    "_comment": "Nett value of basket",
+                    "_comment": "Nett value of basket, total - vat amount",
                     "_gen": "subtract",
                     "args": [
                         {"_gen": "var", "var": "total"},
@@ -213,7 +213,9 @@
                 }
             },
             "value": {
+                "_comment": "Our Salespayments payload",
                 "invoiceNumber": {
+                    "_comment": "Retrieve the invoiceNumber from the Salesbaskets payload",
                     "_gen": "var",
                     "var": "forkKey"
                 },
