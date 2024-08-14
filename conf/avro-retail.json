@@ -139,19 +139,13 @@
                 },
                 "vat": {
                     "_comment": "Vat included in total amount",
-                    "_gen": "divide",
-                    "args": [
-                        {"_gen": "var", "var": "total"},
-                        {"_gen":"var", "var": "vatRate"}
-                    ]
+                    "_gen": "math",
+                    "expr": "total / vatRate"
                 },
                 "nett":{
                     "_comment": "Nett value of basket, total - vat amount",
-                    "_gen": "subtract",
-                    "args": [
-                        {"_gen": "var", "var": "total"},
-                        {"_gen": "var", "var": "vat"}
-                    ]
+                    "_gen": "math",
+                    "expr": "total - vat"
                 }
             },
             "value": {
@@ -187,8 +181,8 @@
         {
             "_comment": "Salespayments Topic Data Generator",
 
-            "topic": "salespayments-shadow",
             "name": "salespaymentsGenerator",
+            "topic": "salespayments-shadow",
             "key": {
                 "_gen": "lookup",
                 "topic": "salesbaskets-shadow",
