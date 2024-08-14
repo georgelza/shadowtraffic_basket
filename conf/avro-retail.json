@@ -29,12 +29,21 @@
                     "var": "quanMax",
                     "as": "integer"
                 },
-                "vatRate": {
-                    "_comment": "Vat Rate, actual rate is environment variable value minus 1",
+                "vatPercentage": {
+                    "_comment": "Vat %, actual rate is environment variable value",
                     "_gen": "env",
-                    "var": "vatRate",
+                    "var": "vatPercentage",
                     "as": "double"
                 },
+                "vatRate": {
+                    "_comment": "Vat Rate to be applied, calculated by adding 1 & vatPercentage together",
+                    "_gen": "add",
+                    "args": [
+                        {"_gen": "var", "var": "vatPercentage"},
+                        1
+                    ],
+                    "as": "double"
+                  },
                 "maxEvents": {
                   "_comment": "Maximum events to generate, aka number of baskets",
                   "_gen": "env",
