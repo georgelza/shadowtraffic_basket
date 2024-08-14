@@ -50,10 +50,19 @@
                     "as": "double"
                   },
                 "maxEvents": {
-                  "_comment": "Maximum events to generate, aka number of baskets",
-                  "_gen": "env",
-                  "var": "basketMin",
-                  "as": "integer"
+                    "_comment": "Maximum events to generate, aka number of baskets",
+                    "_gen": "env",
+                    "var": "basketMin",
+                    "as": "integer"
+                },
+
+                "itemCount": {
+                    "_gen": "uniformDistribution",
+                    "bounds": [
+                        {"_gen":"var", "var": "basketMin"}, 
+                        {"_gen":"var", "var": "basketMax"}
+                    ],                        
+                    "decimals": 0
                 },
 
                 "invoiceNumber": { "_gen": "uuid" },
@@ -83,11 +92,8 @@
                     "_comment": "Size (number of items) of the basket is defined by the bounds value below",
                     "_gen": "repeatedly",
                     "n": {
-                        "_gen": "uniformDistribution",
-                        "bounds": [
-                            {"_gen":"var", "var": "basketMin"}, 
-                            {"_gen":"var", "var": "basketMax"}
-                        ],
+                        "_gen": "var",
+                        "var": "itemCount",
                         "decimals": 0
                     },
                     "target": { 
@@ -118,8 +124,7 @@
                     "_gen": "repeatedly",
                     "n": {
                         "_gen": "var",
-                        "var": "basketItems",
-                        "path": ["length"]    
+                        "var": "itemCount"
                     },
                     "target": {
                         "_comment": "The price * quantity of the basket item selected, aka line item subtotal",
@@ -175,6 +180,10 @@
                 "basketItems": {
                     "_gen": "var",
                     "var": "basketItems"
+                },
+                "total": {
+                    "_gen": "var",
+                    "var": "total"
                 }
           }
         },
