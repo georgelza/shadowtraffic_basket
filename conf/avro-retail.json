@@ -1,7 +1,9 @@
 {
     "generators": [ 
         {
-            "_comment": "Environment variables are defined in params.env, use to drive the size of the dataset",
+            "_comment": "Salesbaskets Topic Data Generator",
+
+            "name": "salesbasketsGenerator",
             "topic": "salesbaskets-shadow",
             "key": {
                 "_gen": "var", 
@@ -153,6 +155,7 @@
                 }
             },
             "value": {
+                "_comment": "Our Salesbaskets payload",
                 "invoiceNumber": {
                     "_gen": "var",
                     "var": "invoiceNumber"
@@ -180,6 +183,54 @@
                     "var": "basketItems"
                 }
           }
+        },
+        {
+            "_comment": "Salespayments Topic Data Generator",
+
+            "topic": "salespayments-shadow",
+            "name": "salespaymentsGenerator",
+            "key": {
+                "_gen": "lookup",
+                "topic": "salesbaskets-shadow",
+                "path": ["value", "storeName"]
+            },
+            "fork": {
+                "key": {
+                    "_gen": "lookup",
+                    "topic": "salesbaskets-shadow",
+                    "path": ["value", "invoiceNumber"]
+                },
+                "paid": {
+                    "_gen": "lookup",
+                    "topic": "salesbaskets-shadow",
+                    "path": ["value", "total"]
+                },
+                "stagger": {
+                    "ms": {
+                        "_gen": "uniformDistribution",
+                        "bounds": [1000, 300000]
+                    }
+                }
+            },
+            "value": {
+                "invoiceNumber": {
+                    "_gen": "var",
+                    "var": "forkKey"
+                },
+                "payDateTime_Ltz": {
+                    "_gen": "formatDateTime",
+                    "ms": {
+                        "_gen": "now"
+                      },
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                },
+                "payTimestamp_Epoc": {
+                    "_gen": "now"
+                },
+                "finTransactionId": {
+                    "_gen": "uuid"
+                }
+            }
         }
     ],
     "globalConfigs": {
