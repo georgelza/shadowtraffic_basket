@@ -1,0 +1,15 @@
+
+services:
+  
+  # watch 'docker exec shadowtraffic curl -s localhost:9400/metrics |grep events_sent'
+  # 
+  shadowtraffic:
+    image: shadowtraffic/shadowtraffic:latest
+    container_name: shadowtraffic
+    hostname: shadowtraffic
+    volumes:
+      - ./conf:/workspace
+    entrypoint: ["java", "-jar", "/home/shadowtraffic.jar"]
+    command: ["--config", "/workspace/avro-retail.json"]
+    env_file:
+      - conf/license.env

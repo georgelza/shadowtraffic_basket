@@ -1,0 +1,159 @@
+{
+    "generators": [ 
+        {
+            "topic": "salesbaskets-shadow",
+            "key":{"_gen": "var","var": "invoiceNumber"},
+            "vars": {
+                "basketMin": {
+                    "_gen": "env",
+                    "var": "basketMin",
+                    "as": "integer"
+                },
+                "basketMax": {
+                    "_gen": "env",
+                    "var": "basketMax",
+                    "as": "integer"
+                },
+                "quanMin": {
+                    "_gen": "env",
+                    "var": "quanMin",
+                    "as": "integer"
+                },
+                "quanMax": {
+                    "_gen": "env",
+                    "var": "quanMax",
+                    "as": "integer"
+                },
+
+                "invoiceNumber": { "_gen": "uuid" },
+
+                "store": {
+                    "_gen": "oneOf",
+                    "choices": {
+                      "_gen": "loadJsonFile",
+                      "file": "/workspace/stores.json"
+                    }
+                },
+                "clerk": {
+                    "_gen": "oneOf",
+                    "choices": {
+                        "_gen": "loadJsonFile",
+                        "file": "/workspace/clerks.json"
+                    }
+                },
+                "basketItems": {
+                    "_gen": "repeatedly",
+                    "n": {
+                        "_gen": "uniformDistribution",
+                        "bounds": [
+                            {"_gen":"var", "var": "basketMin"}, 
+                            {"_gen":"var", "var": "basketMax"}
+                        ],
+                        "decimals": 0
+                    },
+                    "target": { 
+                        "_gen": "merge", 
+                        "objects": [
+                            {
+                                "_gen": "oneOf",
+                                "choices":{
+                                    "_gen": "loadJsonFile",
+                                    "file": "/workspace/basketItems.json"
+                                }
+                            },
+                            {
+                                "quantity": {
+                                    "_gen": "uniformDistribution", 
+                                    "bounds": [
+                                        {"_gen":"var", "var": "quanMin"}, 
+                                        {"_gen":"var", "var": "quanMax"}
+                                    ], 
+                                    "decimals": 0}
+                            }
+                        ]
+                    }
+                },
+                "subtotals": {
+                    "_gen": "repeatedly",
+                    "n": {
+                        "_gen": "var",
+                        "var": "basketItems",
+                        "path": ["length"]    
+                    },
+                    "target": {
+                        "_gen": "multiply",
+                        "args": [
+                            {"_gen": "var", "var": "basketItems", "path": ["price"]},
+                            {"_gen": "var", "var": "basketItems", "path": ["quantity"]}
+                        ]
+                    }
+                },
+                "total": {
+                    "_gen": "add",
+                    "args": [
+                        {"_gen": "var", "var": "subtotals"}
+                    ]
+                },
+                "vat": {
+                    "_gen": "divide",
+                    "args": [
+                        {"_gen": "var", "var": "total"},
+                        1.14
+                    ]
+                },
+                "nett":{
+                    "_gen": "subtract",
+                    "args": [
+                        {"_gen": "var", "var": "total"},
+                        {"_gen": "var", "var": "vat"}
+                    ]
+                }
+            },
+            "value": {
+                "invoiceNumber": {
+                    "_gen": "var",
+                    "var": "invoiceNumber"
+                },
+                "saleDateTime_Ltz": {
+                    "_gen": "formatDateTime",
+                    "ms": {
+                        "_gen": "now"
+                      },
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                },
+                "salesTimetamp_Epoc": {
+                    "_gen": "now"
+                },
+                "store": {
+                    "_gen": "var",
+                    "var": "store"
+                },
+                "clerk": {
+                    "_gen": "var",
+                    "var": "clerk"
+                },
+                "basketItems": {
+                    "_gen": "var",
+                    "var": "basketItems"
+                }
+          }
+        }
+    ],
+    "connections": {
+        "confluent-kafka": {
+            "kind": "kafka",
+            "topicPolicy": {
+                "policy": "dropAndCreate",
+                "partitions": 1,
+                "replicationFactor": 1
+            },
+            "producerConfigs": {
+                "bootstrap.servers": "localhost:9092",
+                "key.serializer": "io.shadowtraffic.kafka.serdes.JsonSerializer",
+                "value.serializer": "io.shadowtraffic.kafka.serdes.JsonSerializer"
+            }
+        }
+    }
+}
+
+

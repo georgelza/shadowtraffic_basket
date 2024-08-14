@@ -1,0 +1,146 @@
+{
+    "generators": [ 
+        {
+            "topic": "salesbaskets-shadow",
+            "key":{"_gen": "var","var": "invoiceNumber"},
+            "vars": {
+                "invoiceNumber": { "_gen": "uuid" },
+                "store": {
+                    "_gen": "oneOf",
+                    "choices": {
+                      "_gen": "loadJsonFile",
+                      "file": "stores.json"
+                  }
+                },
+                "clerk": {
+                    "_gen": "oneOf",
+                    "choices": {
+                        "_gen": "loadJsonFile",
+                        "file": "clerks.json"
+                    }
+                },
+                "basketItems": {
+                    "_gen": "repeatedly",
+                    "n": {
+                        "_gen": "uniformDistribution",
+                        "bounds": [{"_gen": "env", "var": "basketMin"}, {"_gen": "env", "var": "basketMax"}],
+                        "decimals": 0
+                    },
+                    "target": { 
+                        "_gen": "merge", 
+                        "objects": [
+                            {
+                                "_gen": "oneOf",
+                                "choices":[
+                                    {"id": "1001", "name": "Minty Fresh", "brand": "Colgate", "category": "Healthcare", "price": 25.00},
+                                    {"id": "1002", "name": "All Bran", "brand": "Kellog's", "category": "Cereal", "price": 15.00},
+                                    {"id": "1003", "name": "Sugar Free", "brand": "Coke", "category": "Cool drinks", "price": 12.00},
+                                    {"id": "1004", "name": "Auto Wash", "brand": "OMO", "category": "Cleaning", "price": 35.00},
+                                    {"id": "1005", "name": "Super Clean", "brand": "Unilever", "category": "Cleaning", "price": 40.00},
+                                    {"id": "1006", "name": "Ultra White", "brand": "Dove", "category": "Personal Care", "price": 30.00},
+                                    {"id": "1007", "name": "Healthy Smile", "brand": "Colgate", "category": "Healthcare", "price": 20.00},
+                                    {"id": "1008", "name": "Bright Morning", "brand": "Nestle", "category": "Cereal", "price": 22.00},
+                                    {"id": "1009", "name": "Pure Fresh", "brand": "Lipton", "category": "Beverages", "price": 10.00},
+                                    {"id": "1010", "name": "Daily Wash", "brand": "Tide", "category": "Cleaning", "price": 28.00}        
+                                ]
+                            }
+                            ,{"quantity": {"_gen": "uniformDistribution", "bounds": [1, 20], "decimals": 0}}
+                          ]
+
+                    }
+                },
+                "subtotals": {
+                    "_gen": "repeatedly",
+                    "n": {
+                        "_gen": "var",
+                        "var": "basketItems",
+                        "path": ["length"]    
+                    },
+                    "target": {
+                        "_gen": "multiply",
+                        "args": [
+                            {"_gen": "var", "var": "basketItems", "path": ["price"]},
+                            {"_gen": "var", "var": "basketItems", "path": ["quantity"]}
+                        ]
+                    }
+                },
+                "total": {
+                    "_gen": "add",
+                    "args": [
+                        {"_gen": "var", "var": "subtotals"}
+                    ]
+                },
+                "vat": {
+                    "_gen": "divide",
+                    "args": [
+                      {"_gen": "var", "var": "total"},
+                      {"_gen": "env", "var": "vatRate"}
+                    ]
+                },
+                "nett":{
+                  "_gen": "subtract",
+                  "args": [
+                      {"_gen": "var", "var": "total"},
+                      {"_gen": "var", "var": "vat"}
+                    ]
+                }
+            },
+            "value": {
+                "invoiceNumber": {
+                    "_gen": "var",
+                    "var": "invoiceNumber"
+                },
+                "saleDateTime_Ltz": {
+                    "_gen": "formatDateTime",
+                    "ms": {
+                        "_gen": "now"
+                      },
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                },
+                "salesTimetamp_Epoc": {
+                    "_gen": "now"
+                },
+                "store": {
+                    "_gen": "var",
+                    "var": "store"
+                },
+                "clerk": {
+                    "_gen": "var",
+                    "var": "clerk"
+                },
+                "basketItems": {
+                    "_gen": "var",
+                    "var": "basketItems"
+                },
+                "total": {
+                    "_gen": "var",
+                    "var": "total"
+                },
+                "vat": {
+                    "_gen": "var",
+                    "var": "vat"
+                },
+                "nett": {
+                    "_gen": "var",
+                    "var": "nett"
+                }
+        }
+    ],
+    "connections": {
+        "confluent-kafka": {
+            "kind": "kafka",
+            "topicPolicy": {
+                "policy": "dropAndCreate",
+                "partitions": 1,
+                "replicationFactor": 1
+            },
+            "producerConfigs": {
+                "bootstrap.servers": "localhost:9092",
+                "key.serializer": "io.shadowtraffic.kafka.serdes.JsonSerializer",
+                "value.serializer": "io.shadowtraffic.kafka.serdes.JsonSerializer"
+            }
+        }
+    }
+}
+
+

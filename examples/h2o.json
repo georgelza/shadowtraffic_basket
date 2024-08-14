@@ -1,0 +1,59 @@
+{
+    "generators": [
+        {
+            "table": "h2oGroupBy",
+            "varsOnce": {
+                "n": 10000000,
+                "k": 10
+            },
+            "vars": {
+                "id1": {
+                    "_gen": "uniformDistribution",
+                    "bounds": [1, { "_gen": "var", "var": "k" }],
+                    "decimals": 0
+                },
+                "id2": {
+                    "_gen": "uniformDistribution",
+                    "bounds": [1, { "_gen": "var", "var": "k" }],
+                    "decimals": 0
+                },
+                "id3": {
+                    "_gen": "uniformDistribution",
+                    "bounds": [1, {
+                        "_gen": "divide",
+                        "args": [{ "_gen": "var", "var": "n" }, { "_gen": "var", "var": "k" }]
+                    }],
+                    "decimals": 0
+                }
+            },
+            "row": {
+                "id1": { "_gen": "string", "expr": "id#{id1}" },
+                "id2": { "_gen": "string", "expr": "id#{id2}" },
+                "id3": { "_gen": "string", "expr": "id#{id3}" },
+                "id4": { "_gen": "uniformDistribution", "bounds": [1, { "_gen": "var", "var": "k" }], "decimals": 0 },
+                "id5": { "_gen": "uniformDistribution", "bounds": [1, { "_gen": "var", "var": "k" }], "decimals": 0 },
+                "id6": {
+                    "_gen": "uniformDistribution",
+                    "bounds": [1, {
+                        "_gen": "divide",
+                        "args": [ { "_gen": "var", "var": "n" }, { "_gen": "var", "var": "k" } ]
+                    }],
+                    "decimals": 0
+                },
+                "v1": { "_gen": "uniformDistribution", "bounds": [1, 5], "decimals": 0 },
+                "v2": { "_gen": "uniformDistribution", "bounds": [1, 15], "decimals": 0 },
+                "v3": { "_gen": "uniformDistribution", "bounds": [0, 100] }
+            }
+        }
+    ],
+    "connections": {
+        "pg": {
+            "kind": "postgres",
+            "connectionConfigs": {
+                "host": "localhost",
+                "port": 5432,
+                "db": "mydb"
+            }
+        }
+    }
+}
