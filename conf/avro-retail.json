@@ -1,6 +1,7 @@
 {
     "generators": [ 
         {
+            "_comment": "Environment variables are defined in params.env, use to drive the size of the dataset",
             "topic": "salesbaskets-shadow",
             "key":{"_gen": "var","var": "invoiceNumber"},
             "vars": {
@@ -23,20 +24,28 @@
                     "as": "integer"
                 },
                 "quanMax": {
-                  "_comment": "Maximum amount for the quantity bound",
-                  "_gen": "env",
+                    "_comment": "Maximum amount for the quantity bound",
+                    "_gen": "env",
                     "var": "quanMax",
                     "as": "integer"
                 },
                 "vatRate": {
-                  "_comment": "Vat Rate, actual rate is environment variable value minus 1",
-                  "_gen": "env",
+                    "_comment": "Vat Rate, actual rate is environment variable value minus 1",
+                    "_gen": "env",
                     "var": "vatRate",
                     "as": "double"
                 },
+                "maxEvents": {
+                  "_comment": "Minimum number of items in the basket",
+                  "_gen": "env",
+                  "var": "basketMin",
+                  "as": "integer"
+                },
+
                 "invoiceNumber": { "_gen": "uuid" },
 
                 "store": {
+                    "_comment": "List of stores to pick from",
                     "_gen": "oneOf",
                     "choices": {
                       "_gen": "loadJsonFile",
@@ -44,6 +53,7 @@
                     }
                 },
                 "clerk": {
+                    "_comment": "List of clerks to pick from",
                     "_gen": "oneOf",
                     "choices": {
                         "_gen": "loadJsonFile",
@@ -51,6 +61,7 @@
                     }
                 },
                 "basketItems": {
+                    "_comment": "Size (number of items) of the basket is defined by the bounds value below",
                     "_gen": "repeatedly",
                     "n": {
                         "_gen": "uniformDistribution",
@@ -64,6 +75,7 @@
                         "_gen": "merge", 
                         "objects": [
                             {
+                                "_comment": "List of potential basket items to pick from",
                                 "_gen": "oneOf",
                                 "choices":{
                                     "_gen": "loadJsonFile",
@@ -72,6 +84,7 @@
                             },
                             {
                                 "quantity": {
+                                    "_comment": "Random quantity of items for the selected basket item, will be between the quanMin and quanMax environment variables provided",
                                     "_gen": "uniformDistribution", 
                                     "bounds": [
                                         {"_gen":"var", "var": "quanMin"}, 
@@ -90,6 +103,7 @@
                         "path": ["length"]    
                     },
                     "target": {
+                        "_comment": "The price * quantity of the basket item selected, aka line item subtotal",
                         "_gen": "multiply",
                         "args": [
                             {"_gen": "var", "var": "basketItems", "path": ["price"]},
@@ -98,12 +112,14 @@
                     }
                 },
                 "total": {
+                    "_comment": "Add all line item subtotals together - Includes vat",
                     "_gen": "add",
                     "args": [
                         {"_gen": "var", "var": "subtotals"}
                     ]
                 },
                 "vat": {
+                    "_comment": "Vat included in total amount",
                     "_gen": "divide",
                     "args": [
                         {"_gen": "var", "var": "total"},
@@ -111,6 +127,7 @@
                     ]
                 },
                 "nett":{
+                    "_comment": "Nett value of basket",
                     "_gen": "subtract",
                     "args": [
                         {"_gen": "var", "var": "total"},
@@ -148,6 +165,9 @@
           }
         }
     ],
+    "globalConfigs": {
+      "maxEvents": {"_gen":"var", "var": "maxEvents"}
+    },
     "connections": {
         "confluent-kafka": {
             "kind": "kafka",
