@@ -22,16 +22,16 @@
                     "var": "basketMax",
                     "as": "integer"
                 },
-                "quanMin": {
+                "quantityMin": {
                     "_comment": "Minimum amount for the quantity bound",
                     "_gen": "env",
-                    "var": "quanMin",
+                    "var": "quantMin",
                     "as": "integer"
                 },
-                "quanMax": {
+                "quantityMax": {
                     "_comment": "Maximum amount for the quantity bound",
                     "_gen": "env",
-                    "var": "quanMax",
+                    "var": "quantMax",
                     "as": "integer"
                 },
                 "vatPercentage": {
@@ -112,8 +112,8 @@
                                     "_comment": "Random quantity of items for the selected basket item, will be between the quanMin and quanMax environment variables provided",
                                     "_gen": "uniformDistribution", 
                                     "bounds": [
-                                        {"_gen":"var", "var": "quanMin"}, 
-                                        {"_gen":"var", "var": "quanMax"}
+                                        {"_gen":"var", "var": "quantityMin"}, 
+                                        {"_gen":"var", "var": "quantityMax"}
                                     ], 
                                     "decimals": 0}
                             }
@@ -134,23 +134,6 @@
                             {"_gen": "var", "var": "basketItems", "path": ["quantity"]}
                         ]
                     }
-                },
-                "total": {
-                    "_comment": "Add all line item subtotals together to get the total for basket",
-                    "_gen": "add",
-                    "args": [
-                        {"_gen": "var", "var": "subtotals"}
-                    ]
-                },
-                "vat": {
-                    "_comment": "Vat included in total amount",
-                    "_gen": "math",
-                    "expr": "total / vatRate"
-                },
-                "nett":{
-                    "_comment": "Nett value of basket, total - vat amount",
-                    "_gen": "math",
-                    "expr": "total - vat"
                 }
             },
             "value": {
@@ -183,7 +166,7 @@
                 },
                 "total": {
                     "_gen": "var",
-                    "var": "total"
+                    "var": "subtotals"
                 }
           }
         },
