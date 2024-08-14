@@ -3,7 +3,10 @@
         {
             "_comment": "Environment variables are defined in params.env, use to drive the size of the dataset",
             "topic": "salesbaskets-shadow",
-            "key":{"_gen": "var","var": "invoiceNumber"},
+            "key": {
+                "_gen": "var", 
+                "var": "storeName"
+            },
             "vars": {
                 "basketMin": {
                     "_comment": "Minimum number of items in the basket",
@@ -60,6 +63,11 @@
                       "_gen": "loadJsonFile",
                       "file": "/workspace/stores.json"
                     }
+                },
+                "storeName": {
+                    "_gen": "var",
+                    "var": "store",
+                    "path": ["name"]
                 },
                 "clerk": {
                     "_comment": "List of clerks to pick from",
