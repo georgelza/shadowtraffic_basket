@@ -126,6 +126,9 @@
                         "_gen": "var",
                         "var": "itemCount"
                     },
+                    "iterateVars": [
+                        "basketItems"
+                    ],
                     "target": {
                         "_comment": "The price * quantity of the basket item selected, aka line item subtotal",
                         "_gen": "multiply",
