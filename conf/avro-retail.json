@@ -36,7 +36,7 @@
                     "as": "double"
                 },
                 "maxEvents": {
-                  "_comment": "Minimum number of items in the basket",
+                  "_comment": "Maximum events to generate, aka number of baskets",
                   "_gen": "env",
                   "var": "basketMin",
                   "as": "integer"
