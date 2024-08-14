@@ -5,26 +5,35 @@
             "key":{"_gen": "var","var": "invoiceNumber"},
             "vars": {
                 "basketMin": {
+                    "_comment": "Minimum number of items in the basket",
                     "_gen": "env",
                     "var": "basketMin",
                     "as": "integer"
                 },
                 "basketMax": {
+                    "_comment": "Maximum number of items in the basket",
                     "_gen": "env",
                     "var": "basketMax",
                     "as": "integer"
                 },
                 "quanMin": {
+                    "_comment": "Minimum amount for the quantity bound",
                     "_gen": "env",
                     "var": "quanMin",
                     "as": "integer"
                 },
                 "quanMax": {
-                    "_gen": "env",
+                  "_comment": "Maximum amount for the quantity bound",
+                  "_gen": "env",
                     "var": "quanMax",
                     "as": "integer"
                 },
-
+                "vatRate": {
+                  "_comment": "Vat Rate, actual rate is environment variable value minus 1",
+                  "_gen": "env",
+                    "var": "vatRate",
+                    "as": "double"
+                },
                 "invoiceNumber": { "_gen": "uuid" },
 
                 "store": {
@@ -98,7 +107,7 @@
                     "_gen": "divide",
                     "args": [
                         {"_gen": "var", "var": "total"},
-                        1.14
+                        {"_gen":"var", "var": "vatRate"}
                     ]
                 },
                 "nett":{
