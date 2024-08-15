@@ -52,7 +52,7 @@
                 "maxEvents": {
                     "_comment": "Maximum events to generate, aka number of baskets",
                     "_gen": "env",
-                    "var": "basketMin",
+                    "var": "maxEvents",
                     "as": "integer"
                 },
 
@@ -133,8 +133,16 @@
                         "_comment": "The price * quantity of the basket item selected, aka line item subtotal",
                         "_gen": "multiply",
                         "args": [
-                            {"_gen": "var", "var": "basketItems", "path": ["price"]},
-                            {"_gen": "var", "var": "basketItems", "path": ["quantity"]}
+                            {
+                                "_gen": "var", 
+                                "var": "basketItems", 
+                                "path": ["price"]
+                            },
+                            {
+                                "_gen": "var", 
+                                "var": "basketItems", 
+                                "path": ["quantity"]
+                            }
                         ]
                     }
                 }
