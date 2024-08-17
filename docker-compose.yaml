@@ -1,8 +1,15 @@
 
+# configs:
+#   basketItems_file:
+#     file: ./conf/basketItems.json
+#   clerks_file:
+#     file: ./conf/clerks.json
+#   stores_file:
+#     file: ./conf/stores.json
+
+# watch 'docker exec shadowtraffic curl -s localhost:9400/metrics |grep events_sent'
 services:
-  
-  # watch 'docker exec shadowtraffic curl -s localhost:9400/metrics |grep events_sent'
-  # 
+
   shadowtraffic:
     image: shadowtraffic/shadowtraffic:latest
     container_name: shadowtraffic
@@ -13,3 +20,14 @@ services:
     command: ["--config", "/workspace/avro-retail.json"]
     env_file:
       - conf/license.env
+      - conf/params.env
+    # configs:
+    #   - source: basketItems_file
+    #     target: /workspace/basketItems.json
+    #     mode: 444
+    #   - source: clerks_file
+    #     target: /workspace/clerks.json
+    #     mode: 444
+    #   - source: stores_file
+    #     target: /workspace/stores.json
+    #     mode: 444

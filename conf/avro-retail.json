@@ -145,6 +145,12 @@
                             }
                         ]
                     }
+                },
+                "total": {
+                  "_gen": "add",
+                  "args": [
+                    { "_gen": "var", "var": "subtotals" }
+                  ]
                 }
             },
             "value": {
@@ -176,9 +182,9 @@
                     "var": "basketItems"
                 },
                 "total": {
-                    "_gen": "var",
-                    "var": "subtotals"
-                }
+                    "_get": "var",
+                    "var": "total"
+              }
           }
         },
         {
@@ -244,7 +250,7 @@
                 "replicationFactor": 1
             },
             "producerConfigs": {
-                "bootstrap.servers": "localhost:9092",
+                "bootstrap.servers": "broker:9092",
                 "key.serializer": "io.shadowtraffic.kafka.serdes.JsonSerializer",
                 "value.serializer": "io.shadowtraffic.kafka.serdes.JsonSerializer"
             }
