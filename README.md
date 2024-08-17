@@ -1,5 +1,15 @@
 # Some Shadowtraffic Notes.
 
+So I have a larger project MongoCreator where in Iuse a custom Golang application to create 2 sets of documents posted onto Kafka Topics. well it's over a 1000 lines... Learned allot writing it...
+
+    - https://medium.com/@georgelza/an-exercise-in-discovery-streaming-data-in-the-analytical-world-part-1-e7c17d61b9d2
+    - https://github.com/georgelza/MongoCreator-GoProducer-avro.git
+
+
+But, Shadowtraffic will allow me to accomplish the same inside a compact docker container using a input config file.
+Simplying things allot.
+
+
 - https://shadowtraffic.io
 
 - https://www.youtube.com/playlist?list=PLB8as4ufg7p9xii07ZM0sfPsLfq1j-vLe
